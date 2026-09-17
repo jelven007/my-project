@@ -20,7 +20,12 @@ export function CarDetailPage() {
         {car.data ? (
           <>
             <section className="car-hero">
-              <img src={car.data.imageUrl} alt={car.data.name} />
+              <img
+                src={car.data.imageUrl}
+                alt={car.data.name}
+                fetchPriority="high"
+                decoding="async"
+              />
               <div>
                 <p>{car.data.tagline}</p>
                 <h1>{car.data.name}</h1>

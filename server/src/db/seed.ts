@@ -137,7 +137,8 @@ try {
        ON DUPLICATE KEY UPDATE
          name = VALUES(name), tagline = VALUES(tagline), price_from = VALUES(price_from),
          range_km = VALUES(range_km), acceleration = VALUES(acceleration),
-         max_power_ps = VALUES(max_power_ps), top_speed = VALUES(top_speed)`,
+         max_power_ps = VALUES(max_power_ps), top_speed = VALUES(top_speed),
+         image_url = VALUES(image_url)`,
       [
         slug,
         name,
@@ -148,7 +149,7 @@ try {
         acceleration,
         power,
         speed,
-        `/images/cars/${slug}.webp`,
+        `/images/cars/${slug}.jpg`,
         cars.findIndex((car) => car[0] === slug) + 1,
       ],
     );

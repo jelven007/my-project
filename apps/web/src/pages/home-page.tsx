@@ -5,8 +5,7 @@ import { useCars } from "../api/hooks.js";
 import { formatPrice } from "../lib/format.js";
 import { QueryState } from "../components/query-state.js";
 
-const heroImage =
-  "https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=photorealistic%20premium%20electric%20sports%20sedan%20in%20a%20minimal%20modern%20architectural%20plaza%2C%20bright%20daylight%2C%20full%20car%20visible%2C%20automotive%20commercial%20photography%2C%20clean%20white%20and%20charcoal%20palette%2C%20no%20text%2C%20wide%20composition&image_size=landscape_16_9";
+const heroImage = "/images/home-hero.jpg";
 
 export function HomePage() {
   const cars = useCars();
@@ -14,7 +13,7 @@ export function HomePage() {
   return (
     <main>
       <section className="hero">
-        <img src={heroImage} alt="小米汽车纯电轿车" />
+        <img src={heroImage} alt="小米汽车纯电轿车" fetchPriority="high" />
         <div className="hero-copy">
           <p>人车家全生态</p>
           <h1>小米汽车</h1>
@@ -49,12 +48,21 @@ export function HomePage() {
           <div className="model-grid">
             {cars.data?.map((car) => (
               <article className="model" key={car.id}>
-                <p>{car.tagline}</p>
-                <h3>{car.name}</h3>
-                <span>{formatPrice(car.priceFrom)} 起</span>
-                <Link to={`/cars/${car.slug}`}>
-                  了解详情 <ArrowRight size={16} />
-                </Link>
+                <img
+                  className="model-image"
+                  src={car.imageUrl}
+                  alt={car.name}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div className="model-copy">
+                  <p>{car.tagline}</p>
+                  <h3>{car.name}</h3>
+                  <span>{formatPrice(car.priceFrom)} 起</span>
+                  <Link to={`/cars/${car.slug}`}>
+                    了解详情 <ArrowRight size={16} />
+                  </Link>
+                </div>
               </article>
             ))}
           </div>

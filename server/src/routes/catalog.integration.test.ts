@@ -23,7 +23,7 @@ const car: Car = {
   maxPowerPs: 299,
   topSpeed: 210,
   bodyType: "纯电轿车",
-  imageUrl: "/images/cars/su7.webp",
+  imageUrl: "/images/cars/su7.jpg",
   gallery: [],
   highlights: [],
 };
