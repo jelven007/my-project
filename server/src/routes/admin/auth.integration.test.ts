@@ -73,6 +73,11 @@ describe("admin auth routes", () => {
     expect(cookieHeader).toContain("xiaomi_admin_refresh=");
     expect(cookieHeader).toContain("HttpOnly");
     expect(cookieHeader).toContain("SameSite=Strict");
+    expect(
+      (Array.isArray(setCookies) ? setCookies : [setCookies]).find((cookie) =>
+        cookie?.startsWith("xiaomi_admin_csrf="),
+      ),
+    ).toContain("Path=/");
 
     const me = await request(app)
       .get("/api/admin/auth/me")

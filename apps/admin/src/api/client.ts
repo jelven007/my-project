@@ -30,16 +30,32 @@ function readCsrfCookie(): string | undefined {
  */
 export class AdminApiClient {
   private accessToken: string | undefined;
+  private csrfToken: string | undefined;
   private refreshing: Promise<boolean> | undefined;
 
   constructor(private readonly baseUrl = "") {}
 
   setAccessToken(token: string | undefined): void {
     this.accessToken = token;
+    if (token === undefined) this.csrfToken = undefined;
+  }
+
+  setSession(accessToken: string, csrfToken: string): void {
+    this.accessToken = accessToken;
+    this.csrfToken = csrfToken;
+  }
+
+  clearSession(): void {
+    this.accessToken = undefined;
+    this.csrfToken = undefined;
   }
 
   get authenticated(): boolean {
     return this.accessToken !== undefined;
+  }
+
+  hasRefreshSession(): boolean {
+    return this.csrfToken !== undefined || readCsrfCookie() !== undefined;
   }
 
   async request<T>(
@@ -52,7 +68,7 @@ export class AdminApiClient {
     if (body !== undefined) headers["Content-Type"] = "application/json";
     if (this.accessToken) headers.Authorization = `Bearer ${this.accessToken}`;
     if (mutation) {
-      const csrf = readCsrfCookie();
+      const csrf = this.csrfToken ?? readCsrfCookie();
       if (csrf) headers["x-csrf-token"] = csrf;
     }
 
@@ -91,26 +107,34 @@ export class AdminApiClient {
   }
 
   private async performRefresh(): Promise<boolean> {
-    const csrf = readCsrfCookie();
+    const csrf = this.csrfToken ?? readCsrfCookie();
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 5000);
     try {
       const response = await fetch(`${this.baseUrl}/api/admin/auth/refresh`, {
         method: "POST",
         credentials: "include",
+        signal: controller.signal,
         headers: {
           Origin: window.location.origin,
           ...(csrf ? { "x-csrf-token": csrf } : {}),
         },
       });
       if (!response.ok) {
-        this.accessToken = undefined;
+        this.clearSession();
         return false;
       }
-      const session = (await response.json()) as { accessToken: string };
-      this.accessToken = session.accessToken;
+      const session = (await response.json()) as {
+        accessToken: string;
+        csrfToken: string;
+      };
+      this.setSession(session.accessToken, session.csrfToken);
       return true;
     } catch {
-      this.accessToken = undefined;
+      this.clearSession();
       return false;
+    } finally {
+      window.clearTimeout(timeout);
     }
   }
 }

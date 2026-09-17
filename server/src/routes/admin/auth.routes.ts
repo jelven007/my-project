@@ -63,7 +63,7 @@ function csrfCookieOptions(secure: boolean) {
     httpOnly: false,
     secure,
     sameSite: "strict" as const,
-    path: "/api/admin",
+    path: "/",
     maxAge: refreshCookieMaxAge,
   };
 }

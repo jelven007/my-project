@@ -2,7 +2,16 @@ import { createClient } from "redis";
 
 import { config } from "../config.js";
 
-export const redisClient = createClient({ url: config.REDIS_URL });
+export const redisClient = createClient({
+  url: config.REDIS_URL,
+  socket: {
+    connectTimeout: 1500,
+    reconnectStrategy(retries) {
+      if (retries >= 2) return new Error("Redis connection unavailable");
+      return Math.min(100 * 2 ** retries, 500);
+    },
+  },
+});
 
 redisClient.on("error", (error) => {
   process.stderr.write(`Redis error: ${error instanceof Error ? error.message : "unknown"}\n`);

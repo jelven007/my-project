@@ -42,13 +42,13 @@ export function AdminAuthProvider({
   const bootstrapped = useRef(false);
 
   const applySession = useCallback((session: AdminSessionResponse) => {
-    client.setAccessToken(session.accessToken);
+    client.setSession(session.accessToken, session.csrfToken);
     setAdmin(session.admin);
   }, [client]);
 
   const logout = useCallback(async () => {
     await client.request("/auth/logout", { method: "POST" }).catch(() => undefined);
-    client.setAccessToken(undefined);
+    client.clearSession();
     setAdmin(undefined);
   }, [client]);
 
@@ -56,12 +56,12 @@ export function AdminAuthProvider({
     if (bootstrapped.current) return;
     bootstrapped.current = true;
     void (async () => {
-      if (await client.tryRefresh()) {
+      if (client.hasRefreshSession() && (await client.tryRefresh())) {
         try {
           const me = await client.request<{ admin: AdminIdentity }>("/auth/me");
           setAdmin(me.admin);
         } catch {
-          client.setAccessToken(undefined);
+          client.clearSession();
         }
       }
       setReady(true);
