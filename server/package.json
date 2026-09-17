@@ -1,0 +1,41 @@
+{
+  "name": "@xiaomi-car/server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "db:migrate": "tsx src/db/migrate.ts",
+    "db:seed": "tsx src/db/seed.ts",
+    "admin:create": "tsx src/cli/create-super-admin.ts",
+    "orders:expire": "tsx src/workers/expire-orders.ts"
+  },
+  "dependencies": {
+    "@volcengine/openapi": "^1.36.2",
+    "@xiaomi-car/contracts": "*",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "jose": "^6.2.12",
+    "mysql2": "^3.14.5",
+    "pino": "^9.9.0",
+    "redis": "^5.8.2",
+    "zod": "^4.1.5"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/node": "^22.18.1",
+    "@types/supertest": "^6.0.3",
+    "supertest": "^7.1.4",
+    "tsx": "^4.20.5"
+  }
+}

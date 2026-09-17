@@ -1,0 +1,38 @@
+{
+  "name": "xiaomi-car-platform",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "server"
+  ],
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "dev": "concurrently -n web,admin,api -c cyan,magenta,yellow \"npm run dev -w @xiaomi-car/web\" \"npm run dev -w @xiaomi-car/admin\" \"npm run dev -w @xiaomi-car/server\"",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "db:migrate": "npm run db:migrate -w @xiaomi-car/server",
+    "db:seed": "npm run db:seed -w @xiaomi-car/server",
+    "admin:create": "npm run admin:create -w @xiaomi-car/server --"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.35.0",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^6.10.0",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
+    "concurrently": "^9.2.1",
+    "eslint": "^9.35.0",
+    "jsdom": "^25.0.1",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.42.0",
+    "vitest": "^3.2.4"
+  }
+}
