@@ -14,7 +14,10 @@ export function TestDrivePage() {
   const { user } = useAuth();
   const cars = useCars();
   const [carId, setCarId] = useState("");
-  const dealers = useDealers({ carId: carId || undefined });
+  const dealers = useDealers({
+    carId: carId || undefined,
+    enabled: carId !== "",
+  });
   const [dealerId, setDealerId] = useState("");
   const [contactName, setContactName] = useState(user?.nickname ?? "");
   const [contactPhone, setContactPhone] = useState("");
@@ -24,7 +27,13 @@ export function TestDrivePage() {
   const [submitted, setSubmitted] = useState(false);
   const createTestDrive = useCreateTestDrive();
 
-  const dealerOptions = useMemo(() => dealers.data ?? [], [dealers.data]);
+  const dealerOptions = useMemo(
+    () =>
+      (dealers.data ?? []).filter((dealer) =>
+        dealer.availableCars.some((offering) => offering.carId === carId),
+      ),
+    [carId, dealers.data],
+  );
 
   async function submit() {
     setError(undefined);

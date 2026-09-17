@@ -27,7 +27,12 @@ export function useCar(slug: string | undefined) {
   });
 }
 
-export function useDealers(params: { city?: string; carId?: string; orderableOnly?: boolean }) {
+export function useDealers(params: {
+  city?: string;
+  carId?: string;
+  orderableOnly?: boolean;
+  enabled?: boolean;
+}) {
   const search = new URLSearchParams();
   if (params.city) search.set("city", params.city);
   if (params.carId) search.set("carId", params.carId);
@@ -35,6 +40,7 @@ export function useDealers(params: { city?: string; carId?: string; orderableOnl
   const query = search.toString();
   return useQuery({
     queryKey: ["dealers", params],
+    enabled: params.enabled ?? true,
     queryFn: () => apiClient.request<{ items: Dealer[] }>(`/api/dealers${query ? `?${query}` : ""}`),
     select: (data) => data.items,
   });

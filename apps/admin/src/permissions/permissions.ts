@@ -28,7 +28,7 @@ export const navItems: NavItem[] = [
   { key: "dashboard", label: "工作台", permission: "dashboard:read" },
   { key: "content", label: "内容管理", permission: "content:read" },
   { key: "cars", label: "车型管理", permission: "cars:read" },
-  { key: "inventory", label: "经销商与库存", permission: "inventory:read" },
+  { key: "inventory", label: "经销商库存", permission: "inventory:read" },
   { key: "orders", label: "订单管理", permission: "orders:read" },
   { key: "users", label: "用户管理", permission: "users:read" },
   { key: "test-drives", label: "试驾预约", permission: "test_drive:read" },

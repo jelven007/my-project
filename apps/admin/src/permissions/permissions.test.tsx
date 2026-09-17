@@ -30,4 +30,14 @@ describe("permission helpers", () => {
     expect(items).not.toContain("audit");
     expect(items).not.toContain("orders");
   });
+
+  it("uses the concise dealer inventory navigation label", () => {
+    const inventoryManager: AdminIdentity = {
+      ...editor,
+      permissions: ["inventory:read"],
+    };
+    expect(visibleNavItems(inventoryManager)).toEqual([
+      expect.objectContaining({ key: "inventory", label: "经销商库存" }),
+    ]);
+  });
 });

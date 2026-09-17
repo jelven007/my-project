@@ -13,7 +13,7 @@ export function createCarsRouter(repository: CarsRepository): Router {
 
   router.get("/", async (request, response) => {
     const filters = querySchema.parse(request.query);
-    response.setHeader("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
+    response.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
     response.json({ items: await repository.listPublished(filters) });
   });
 
@@ -21,7 +21,7 @@ export function createCarsRouter(repository: CarsRepository): Router {
     const slug = z.string().regex(/^[a-z0-9-]+$/).parse(request.params.slug);
     const car = await repository.findPublishedBySlug(slug);
     if (!car) throw new HttpError(404, "CAR_NOT_FOUND", "车型不存在");
-    response.setHeader("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
+    response.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
     response.json(car);
   });
 

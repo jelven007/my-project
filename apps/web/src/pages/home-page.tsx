@@ -34,9 +34,6 @@ export function HomePage() {
             <p>探索车型</p>
             <h2 id="models-title">为每一种热爱而来</h2>
           </div>
-          <Link to="/cars/su7">
-            车型详情 <ArrowRight size={17} />
-          </Link>
         </div>
         <QueryState
           isLoading={cars.isLoading}

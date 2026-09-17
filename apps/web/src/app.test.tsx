@@ -21,6 +21,7 @@ describe("portal navigation", () => {
     renderWithProviders(<App />);
 
     expect(screen.queryByRole("link", { name: /经销商库存/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "车型详情" })).not.toBeInTheDocument();
     await waitFor(() =>
       expect(screen.getAllByRole("link", { name: "预约试驾" })).not.toHaveLength(0),
     );

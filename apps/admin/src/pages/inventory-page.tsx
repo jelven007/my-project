@@ -53,7 +53,7 @@ export function InventoryPage() {
     <div>
       <div className="page-title">
         <div>
-          <Typography.Title level={2}>经销商与库存</Typography.Title>
+          <Typography.Title level={2}>经销商库存</Typography.Title>
           <p>使用乐观锁维护人工库存，占用量由订单流转自动管理。</p>
         </div>
       </div>
