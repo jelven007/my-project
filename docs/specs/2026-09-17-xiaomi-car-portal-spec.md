@@ -1,6 +1,6 @@
 # 小米汽车门户网站需求规格说明书
 
-> **版本:** v1.5
+> **版本:** v1.6
 > **日期:** 2026-09-18
 > **状态:** 待评审
 > **关联文档:** [后台管理系统 Spec](./2026-09-17-xiaomi-car-admin-spec.md) | [火山引擎部署技术方案](../architecture/2026-09-17-volcengine-deployment-technical-design.md) | [测试总计划](../testing/2026-09-17-test-plan.md)
@@ -329,6 +329,8 @@ server/
 | GET | `/api/content/:contentKey` | 读取已发布内容 |
 | GET | `/api/cars` | 已发布车型列表 |
 | GET | `/api/cars/:slug` | 已发布车型详情 |
+
+- 实现约束:`/api/cars` 与 `/api/cars/:slug` 必须返回 `Cache-Control: public, max-age=0, must-revalidate`,确保后台发布或下线车型后,门户在下次加载或重新聚焦时立即重新校验并反映最新状态,不得使用长效或 `stale-while-revalidate` 缓存;CDN 及反向代理不得缓存该动态接口。
 
 ### 7.3 交付门店
 | 方法 | 路径 | 说明 |
