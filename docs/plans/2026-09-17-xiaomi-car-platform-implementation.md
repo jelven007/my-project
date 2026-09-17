@@ -272,7 +272,7 @@ git commit -m "feat: add WeChat OAuth flow"
 
 **Step 1: Write failing API tests**
 
-Assert only published content/cars and active dealers/inventory are returned. Verify filters, ordering, exact availability, and no draft payload leakage.
+Assert only published content/cars and active orderable dealers are returned. Verify filters, ordering, no exact inventory quantity leakage, and no draft payload leakage.
 
 **Step 2: Implement parameterized queries**
 
@@ -435,7 +435,7 @@ git commit -m "feat: add admin operations APIs"
 
 **Step 1: Write failing component tests**
 
-Cover responsive navigation, auth return URLs, login tabs, SMS cooldown, inventory filters, zero-amount confirmation, order cancellation, test-drive form, and profile masking.
+Cover responsive navigation, auth return URLs, login tabs, SMS cooldown, delivery-center filters, zero-amount confirmation, absence of portal inventory quantities, order cancellation, test-drive form, and profile masking.
 
 **Step 2: Build the portal**
 

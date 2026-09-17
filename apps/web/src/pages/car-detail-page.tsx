@@ -23,7 +23,7 @@ export function CarDetailPage() {
               <img
                 src={car.data.imageUrl}
                 alt={car.data.name}
-                fetchPriority="high"
+                loading="eager"
                 decoding="async"
               />
               <div>
@@ -31,8 +31,11 @@ export function CarDetailPage() {
                 <h1>{car.data.name}</h1>
                 <strong>{formatPrice(car.data.priceFrom)} 起</strong>
                 <div className="car-actions">
-                  <Link className="primary-action" to={`/inventory?carId=${car.data.id}`}>
-                    查看现车 <ArrowRight size={18} />
+                  <Link
+                    className="primary-action"
+                    to={`/order?carId=${car.data.id}&slug=${car.data.slug}`}
+                  >
+                    立即下定 <ArrowRight size={18} />
                   </Link>
                   <Link className="secondary-action" to="/test-drive">
                     预约试驾

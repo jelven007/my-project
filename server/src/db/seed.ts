@@ -9,6 +9,36 @@ const cars = [
   ["su7-ultra", "SU7 Ultra", "巅峰性能科技轿车", 529900, 630, 1.98, 1548, 350],
 ] as const;
 
+const dealers = [
+  [
+    "BJ-WFJ",
+    "北京王府井交付中心",
+    "北京",
+    "北京",
+    "北京市东城区王府井大街 88 号",
+    "010-40001888",
+    "10:00-20:00",
+  ],
+  [
+    "SH-PD",
+    "上海浦东交付中心",
+    "上海",
+    "上海",
+    "上海市浦东新区世纪大道 100 号",
+    "021-40001888",
+    "10:00-20:00",
+  ],
+  [
+    "SZ-NS",
+    "深圳南山交付中心",
+    "广东",
+    "深圳",
+    "深圳市南山区深南大道 9000 号",
+    "0755-40001888",
+    "10:00-20:00",
+  ],
+] as const;
+
 const permissions = [
   "dashboard:read",
   "content:read",
@@ -153,6 +183,29 @@ try {
         cars.findIndex((car) => car[0] === slug) + 1,
       ],
     );
+  }
+  for (const [code, name, province, city, address, phone, businessHours] of dealers) {
+    await pool.execute(
+      `INSERT INTO dealers
+       (name, code, province, city, address, phone, business_hours, status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, 'active')
+       ON DUPLICATE KEY UPDATE
+         name = VALUES(name), province = VALUES(province), city = VALUES(city),
+         address = VALUES(address), phone = VALUES(phone),
+         business_hours = VALUES(business_hours), status = 'active'`,
+      [name, code, province, city, address, phone, businessHours],
+    );
+    for (const [slug] of cars) {
+      await pool.execute(
+        `INSERT INTO dealer_inventory
+         (dealer_id, car_id, total_qty, reserved_qty, status)
+         SELECT d.id, c.id, 8, 0, 'active'
+         FROM dealers d, cars c
+         WHERE d.code = ? AND c.slug = ?
+         ON DUPLICATE KEY UPDATE status = 'active'`,
+        [code, slug],
+      );
+    }
   }
   process.stdout.write(
     config.NODE_ENV === "production"

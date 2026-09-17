@@ -6,7 +6,7 @@ import type { DealersRepository } from "../repositories/dealers.repository.js";
 const querySchema = z.object({
   city: z.string().trim().min(1).max(50).optional(),
   carId: z.string().regex(/^\d+$/).optional(),
-  availableOnly: z
+  orderableOnly: z
     .enum(["true", "false"])
     .transform((value) => value === "true")
     .optional(),

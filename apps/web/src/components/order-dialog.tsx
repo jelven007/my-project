@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import type { Dealer, DealerInventory } from "@xiaomi-car/contracts";
+import type { Dealer, DealerOffering } from "@xiaomi-car/contracts";
 
 import { ApiError } from "../api/client.js";
 import { useCreateOrder } from "../api/hooks.js";
@@ -9,11 +9,17 @@ import { useAuth } from "../context/auth-context.js";
 
 interface OrderDialogProps {
   dealer: Dealer;
-  unit: DealerInventory;
+  offering: DealerOffering;
+  returnTo: string;
   onClose: () => void;
 }
 
-export function OrderDialog({ dealer, unit, onClose }: OrderDialogProps) {
+export function OrderDialog({
+  dealer,
+  offering,
+  returnTo,
+  onClose,
+}: OrderDialogProps) {
   const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
   const createOrder = useCreateOrder();
@@ -35,7 +41,9 @@ export function OrderDialog({ dealer, unit, onClose }: OrderDialogProps) {
             <button
               type="button"
               className="primary"
-              onClick={() => navigate(`/login?returnTo=${encodeURIComponent("/inventory")}`)}
+              onClick={() =>
+                navigate(`/login?returnTo=${encodeURIComponent(returnTo)}`)
+              }
             >
               去登录
             </button>
@@ -49,7 +57,7 @@ export function OrderDialog({ dealer, unit, onClose }: OrderDialogProps) {
     setError(undefined);
     try {
       await createOrder.mutateAsync({
-        inventoryId: unit.inventoryId,
+        inventoryId: offering.inventoryId,
         contactName: contactName.trim(),
         contactPhone,
       });
@@ -66,7 +74,7 @@ export function OrderDialog({ dealer, unit, onClose }: OrderDialogProps) {
           <>
             <h2>下定成功</h2>
             <p>
-              我们已为您在 {dealer.name} 预留 {unit.carName}，请在订单中心查看后续进度。
+              我们已为您在 {dealer.name} 提交 {offering.carName} 下定意向，请在订单中心查看后续进度。
             </p>
             <div className="dialog-actions">
               <button type="button" className="primary" onClick={() => navigate("/account")}>
@@ -76,7 +84,7 @@ export function OrderDialog({ dealer, unit, onClose }: OrderDialogProps) {
           </>
         ) : (
           <>
-            <h2>0 元下定 · {unit.carName}</h2>
+            <h2>0 元下定 · {offering.carName}</h2>
             <p className="dialog-sub">
               {dealer.name} · {dealer.city}
             </p>

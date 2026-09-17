@@ -17,14 +17,12 @@ export const carSchema = z.object({
   highlights: z.array(z.unknown()),
 });
 
-export const dealerInventorySchema = z.object({
+export const dealerOfferingSchema = z.object({
   inventoryId: z.string(),
   carId: z.string(),
   carName: z.string(),
   carSlug: z.string(),
-  totalQuantity: z.number().int().nonnegative(),
-  reservedQuantity: z.number().int().nonnegative(),
-  availableQuantity: z.number().int().nonnegative(),
+  available: z.boolean(),
 });
 
 export const dealerSchema = z.object({
@@ -38,9 +36,9 @@ export const dealerSchema = z.object({
   longitude: z.number().nullable(),
   latitude: z.number().nullable(),
   businessHours: z.string(),
-  inventory: z.array(dealerInventorySchema),
+  availableCars: z.array(dealerOfferingSchema),
 });
 
 export type Car = z.infer<typeof carSchema>;
 export type Dealer = z.infer<typeof dealerSchema>;
-export type DealerInventory = z.infer<typeof dealerInventorySchema>;
+export type DealerOffering = z.infer<typeof dealerOfferingSchema>;

@@ -39,15 +39,13 @@ const dealer: Dealer = {
   longitude: 116.4,
   latitude: 39.9,
   businessHours: "09:00-18:00",
-  inventory: [
+  availableCars: [
     {
       inventoryId: "100",
       carId: "1",
       carName: "SU7",
       carSlug: "su7",
-      totalQuantity: 5,
-      reservedQuantity: 2,
-      availableQuantity: 3,
+      available: true,
     },
   ],
 };
@@ -106,18 +104,33 @@ describe("public catalog routes", () => {
     expect(missing.status).toBe(404);
   });
 
-  it("returns exact available inventory with validated filters", async () => {
+  it("returns eligible delivery centers without exposing inventory quantities", async () => {
     const { app, dealers } = setup();
     const response = await request(app)
       .get("/api/dealers")
-      .query({ city: "北京", carId: "1", availableOnly: "true" });
+      .query({ city: "北京", carId: "1", orderableOnly: "true" });
 
     expect(response.status).toBe(200);
-    expect(response.body.items[0].inventory[0].availableQuantity).toBe(3);
+    expect(response.body.items[0].availableCars[0]).toEqual({
+      inventoryId: "100",
+      carId: "1",
+      carName: "SU7",
+      carSlug: "su7",
+      available: true,
+    });
+    expect(response.body.items[0].availableCars[0]).not.toHaveProperty(
+      "availableQuantity",
+    );
+    expect(response.body.items[0].availableCars[0]).not.toHaveProperty(
+      "totalQuantity",
+    );
+    expect(response.body.items[0].availableCars[0]).not.toHaveProperty(
+      "reservedQuantity",
+    );
     expect(dealers.listActive).toHaveBeenCalledWith({
       city: "北京",
       carId: "1",
-      availableOnly: true,
+      orderableOnly: true,
     });
   });
 });

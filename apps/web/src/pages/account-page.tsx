@@ -49,7 +49,7 @@ export function AccountPage() {
           isError={orders.isError}
           isEmpty={orders.data?.length === 0}
           onRetry={() => void orders.refetch()}
-          emptyLabel="暂无订单，去看看现车吧"
+          emptyLabel="暂无订单，去看看车型吧"
         >
           <ul className="order-list">
             {orders.data?.map((order) => (

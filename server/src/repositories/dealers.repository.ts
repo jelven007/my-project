@@ -5,7 +5,7 @@ import { dealerSchema, type Dealer } from "@xiaomi-car/contracts";
 export interface DealerFilters {
   city?: string;
   carId?: string;
-  availableOnly?: boolean;
+  orderableOnly?: boolean;
 }
 
 export interface DealersRepository {
@@ -45,7 +45,7 @@ export class MysqlDealersRepository implements DealersRepository {
       conditions.push("c.id = ?");
       values.push(filters.carId);
     }
-    if (filters.availableOnly) conditions.push("i.total_qty > i.reserved_qty");
+    if (filters.orderableOnly) conditions.push("i.total_qty > i.reserved_qty");
 
     const [rows] = await this.pool.execute<DealerInventoryRow[]>(
       `SELECT d.id AS dealer_id, d.code, d.name AS dealer_name, d.province, d.city,
@@ -63,18 +63,16 @@ export class MysqlDealersRepository implements DealersRepository {
     const dealers = new Map<string, Dealer>();
     for (const row of rows) {
       const id = row.dealer_id.toString();
-      const inventory = {
+      const offering = {
         inventoryId: row.inventory_id.toString(),
         carId: row.car_id.toString(),
         carName: row.car_name,
         carSlug: row.car_slug,
-        totalQuantity: row.total_qty,
-        reservedQuantity: row.reserved_qty,
-        availableQuantity: row.total_qty - row.reserved_qty,
+        available: row.total_qty > row.reserved_qty,
       };
       const existing = dealers.get(id);
       if (existing) {
-        existing.inventory.push(inventory);
+        existing.availableCars.push(offering);
       } else {
         dealers.set(
           id,
@@ -89,7 +87,7 @@ export class MysqlDealersRepository implements DealersRepository {
             longitude: row.longitude,
             latitude: row.latitude,
             businessHours: row.business_hours,
-            inventory: [inventory],
+            availableCars: [offering],
           }),
         );
       }

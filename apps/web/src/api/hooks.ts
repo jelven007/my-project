@@ -27,11 +27,11 @@ export function useCar(slug: string | undefined) {
   });
 }
 
-export function useDealers(params: { city?: string; carId?: string; availableOnly?: boolean }) {
+export function useDealers(params: { city?: string; carId?: string; orderableOnly?: boolean }) {
   const search = new URLSearchParams();
   if (params.city) search.set("city", params.city);
   if (params.carId) search.set("carId", params.carId);
-  if (params.availableOnly) search.set("availableOnly", "true");
+  if (params.orderableOnly) search.set("orderableOnly", "true");
   const query = search.toString();
   return useQuery({
     queryKey: ["dealers", params],

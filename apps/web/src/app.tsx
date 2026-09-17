@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { MapPin, Menu, UserRound, X } from "lucide-react";
-import { Link, Route, Routes } from "react-router-dom";
+import { Menu, UserRound, X } from "lucide-react";
+import { Link, Navigate, Route, Routes } from "react-router-dom";
 
 import { useAuth } from "./context/auth-context.js";
 import { AccountPage } from "./pages/account-page.js";
 import { CarDetailPage } from "./pages/car-detail-page.js";
 import { HomePage } from "./pages/home-page.js";
-import { InventoryPage } from "./pages/inventory-page.js";
 import { LoginPage } from "./pages/login-page.js";
+import { OrderPage } from "./pages/order-page.js";
 import { RegisterPage } from "./pages/register-page.js";
 import { TestDrivePage } from "./pages/test-drive-page.js";
 import { ProtectedRoute } from "./routes/protected-route.js";
@@ -30,9 +30,6 @@ function SiteHeader() {
         </Link>
         <Link to="/cars/su7-ultra" onClick={() => setMenuOpen(false)}>
           SU7 Ultra
-        </Link>
-        <Link to="/inventory" onClick={() => setMenuOpen(false)}>
-          <MapPin size={16} /> 经销商库存
         </Link>
         <Link to="/test-drive" onClick={() => setMenuOpen(false)}>
           预约试驾
@@ -62,7 +59,8 @@ export function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/cars/:slug" element={<CarDetailPage />} />
-        <Route path="/inventory" element={<InventoryPage />} />
+        <Route path="/inventory" element={<Navigate replace to="/" />} />
+        <Route path="/order" element={<OrderPage />} />
         <Route path="/test-drive" element={<TestDrivePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />

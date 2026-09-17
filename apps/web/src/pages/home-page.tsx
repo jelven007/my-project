@@ -13,14 +13,14 @@ export function HomePage() {
   return (
     <main>
       <section className="hero">
-        <img src={heroImage} alt="小米汽车纯电轿车" fetchPriority="high" />
+        <img src={heroImage} alt="小米汽车纯电轿车" loading="eager" />
         <div className="hero-copy">
           <p>人车家全生态</p>
           <h1>小米汽车</h1>
           <span>先进移动智能空间，为驾驶注入更多可能。</span>
           <div className="hero-actions">
-            <Link className="primary-action" to="/inventory">
-              查看现车 <ArrowRight size={18} />
+            <Link className="primary-action" to="/cars/su7">
+              探索车型 <ArrowRight size={18} />
             </Link>
             <Link className="secondary-action" to="/test-drive">
               预约试驾
@@ -34,8 +34,8 @@ export function HomePage() {
             <p>探索车型</p>
             <h2 id="models-title">为每一种热爱而来</h2>
           </div>
-          <Link to="/inventory">
-            全部库存 <ArrowRight size={17} />
+          <Link to="/cars/su7">
+            车型详情 <ArrowRight size={17} />
           </Link>
         </div>
         <QueryState
