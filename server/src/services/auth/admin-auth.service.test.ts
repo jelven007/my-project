@@ -116,4 +116,28 @@ describe("AdminAuthService", () => {
       new AdminAuthError("ACCOUNT_DISABLED"),
     );
   });
+
+  it("allows the development admin account without MFA", async () => {
+    repository.records.push({
+      id: "2",
+      username: "admin",
+      email: "admin@localhost.invalid",
+      displayName: "本地管理员",
+      passwordHash: await hash("admin", 4),
+      active: true,
+      failedLoginCount: 0,
+      roles: ["local_admin"],
+      permissions: ["dashboard:read", "admin:manage"],
+    });
+
+    const session = await service.login("admin", "admin", {});
+
+    expect(session).toMatchObject({
+      kind: "authenticated",
+      admin: {
+        username: "admin",
+        roles: ["local_admin"],
+      },
+    });
+  });
 });

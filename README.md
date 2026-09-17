@@ -19,6 +19,9 @@ npm run db:seed
 npm run dev
 ```
 
+开发环境执行 seed 后可使用后台测试账号 `admin` / `admin`。该弱账号仅在
+`NODE_ENV !== production` 时创建，生产环境必须通过 CLI 创建强密码并启用 MFA。
+
 开发地址：
 
 - 门户：<http://localhost:5173>

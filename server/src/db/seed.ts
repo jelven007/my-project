@@ -1,3 +1,6 @@
+import { hash } from "bcryptjs";
+
+import { config } from "../config.js";
 import { pool } from "./pool.js";
 
 const cars = [
@@ -43,6 +46,7 @@ const permissions = [
 
 const roles: Record<string, readonly string[]> = {
   super_admin: permissions,
+  ...(config.NODE_ENV === "production" ? {} : { local_admin: permissions }),
   content_editor: ["dashboard:read", "content:read", "content:update", "content:preview"],
   content_publisher: [
     "dashboard:read",
@@ -99,6 +103,29 @@ try {
     }
   }
 
+  if (config.NODE_ENV !== "production") {
+    const passwordHash = await hash("admin", 12);
+    await pool.execute(
+      `INSERT INTO admin_users
+       (username, email, password_hash, display_name, status, mfa_secret_encrypted)
+       VALUES ('admin', 'admin@localhost.invalid', ?, '本地管理员', 'active', NULL)
+       ON DUPLICATE KEY UPDATE
+         password_hash = VALUES(password_hash),
+         display_name = VALUES(display_name),
+         status = 'active',
+         mfa_secret_encrypted = NULL,
+         failed_login_count = 0,
+         locked_until = NULL`,
+      [passwordHash],
+    );
+    await pool.execute(
+      `INSERT IGNORE INTO admin_user_roles (admin_user_id, role_id)
+       SELECT au.id, r.id
+       FROM admin_users au, roles r
+       WHERE au.username = 'admin' AND r.code = 'local_admin'`,
+    );
+  }
+
   for (const [slug, name, tagline, price, range, acceleration, power, speed] of cars) {
     await pool.execute(
       `INSERT INTO cars
@@ -126,7 +153,11 @@ try {
       ],
     );
   }
-  process.stdout.write("Development catalog seeded\n");
+  process.stdout.write(
+    config.NODE_ENV === "production"
+      ? "Production catalog and RBAC seeded\n"
+      : "Development catalog, RBAC, and admin/admin account seeded\n",
+  );
 } finally {
   await pool.end();
 }
